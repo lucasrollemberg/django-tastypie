@@ -1766,7 +1766,9 @@ class ModelDeclarativeMetaclass(DeclarativeMetaclass):
         meta = attrs.get('Meta')
 
         if meta and hasattr(meta, 'queryset'):
-            setattr(meta, 'object_class', meta.queryset.model)
+            queryset = getattr(meta, 'queryset', None)
+            if queryset and hasattr(queryset, 'model'):
+                setattr(meta, 'object_class', queryset.model)
 
         new_class = super(ModelDeclarativeMetaclass, cls).__new__(cls, name, bases, attrs)
         include_fields = getattr(new_class._meta, 'fields', [])
